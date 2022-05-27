@@ -1,95 +1,68 @@
 /*Assignment no =10(Group E)
 Title=Read the marks obtained by students of second year in an online examination of particular subject. Find out maximum and minimum marks obtained in that subject. Use heap data structure. Analyze the algorithm.*/
 
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
-class hp
-{
-    int heap[20], heap1[20], x, n1, i;
 
-public:
-    hp()
-    {
-        heap[0] = 0;
-        heap1[0] = 0;
-    }
-    void getdata();
-    void insert1(int heap[], int);
-    void upadjust1(int heap[], int);
-    void insert2(int heap1[], int);
-    void upadjust2(int heap1[], int);
-    void minmax();
-};
-void hp::getdata()
+void heapify(vector<int> &a, int n, int i)
 {
-    cout << "\nEnter the no. of students"<<endl;
-    cin >> n1;
-    cout << "Enter the marks"<<endl;
-    for (i = 0; i < n1; i++)
-    {
-        cin >> x;
-        insert1(heap, x);
-        insert2(heap1, x);
-    }
-}
-void hp::insert1(int heap[20], int x)
-{
-    int n;
-    n = heap[0];
-    heap[n + 1] = x;
-    heap[0] = n + 1;
 
-    upadjust1(heap, n + 1);
-}
-void hp::upadjust1(int heap[20], int i)
-{
-    int temp;
-    while (i > 1 && heap[i] > heap[i / 2])
-    {
-        temp = heap[i];
-        heap[i] = heap[i / 2];
-        heap[i / 2] = temp;
-        i = i / 2;
-    }
-}
-void hp::insert2(int heap1[20], int x)
-{
-    int n;
-    n = heap1[0];
-    heap1[n + 1] = x;
-    heap1[0] = n + 1;
+    int currIdx = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
 
-    upadjust2(heap1, n + 1);
+    if (l < n && a[l] > a[currIdx])
+    {
+        currIdx = l;
+    }
+    if (r < n && a[r] > a[currIdx])
+    {
+        currIdx = r;
+    }
+    if (currIdx != i)
+    {
+        swap(a[i], a[currIdx]);
+        heapify(a, n, currIdx);
+    }
 }
-void hp::upadjust2(int heap1[20], int i)
+
+void heapSort(vector<int> &a)
 {
-    int temp1;
-    while (i > 1 && heap1[i] < heap1[i / 2])
+    int n = a.size();
+
+    for (int i = n / 2 - 1; i >= 0; i--)
     {
-        temp1 = heap1[i];
-        heap1[i] = heap1[i / 2];
-        heap1[i / 2] = temp1;
-        i = i / 2;
+        heapify(a, n, i);
+    }
+
+    for (int i = n - 1; i > 0; i--)
+    {
+        swap(a[0], a[i]);
+        heapify(a, i, 0);
     }
 }
-void hp::minmax()
-{
-    cout << "Max marks" << heap[1]<<endl;
-    for (i = 1; i <= n1; i++)
-    {
-        cout << ""
-             << heap[i]<<endl;
-    }
-    cout << "Min marks" << heap1[1]<<endl;
-    for (i = 1; i <= n1; i++)
-    {
-        cout << ""<< heap1[i]<<endl;;
-    }
-}
+
 int main()
 {
-    hp h;
-    h.getdata();
-    h.minmax();
+
+    int n;
+    cout << "Enter no. of students:" << endl;
+    cin >> n;
+
+    vector<int> a(n);
+    cout << "Enter marks:" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cin >> a[i];
+    }
+    heapSort(a);
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << a[i] << " " << endl;
+    }
+    cout << "maxMarks: " << a[0] << endl;
+    cout << "maxMarks: " << a[n - 1] << endl;
+
     return 0;
 }
