@@ -1,155 +1,65 @@
 /*Assignment no = 4(Group B)
 Title=Construct an expression tree from the given prefix expression eg. +--a*bc/def and traverse it using Postorder traversal (non recursive) and then delete the entire tree.*/
-#include <iostream>
+#include <bits/stdc++.h>
+#include<stack>
 using namespace std;
-class node
-{
- public:
-       char data;
-        node *left;
-        node *right;
+
+struct node{
+    char data;
+    node* left;
+    node* right;
+    node(char val){
+        data = val;
+        left = NULL; 
+        right = NULL; 
+    }
 };
-class stack 
-{
-        node *a[20];
-        int top;
-    public:
-        stack()
-        {
-            top = -1;
-        }
-        void push(node *temp);
-        node * pop();
-        int isempty();
-        int isfull();
-};
-void stack::push(node *temp)
-{
-    if(!isfull())
-    {
-        a[++top] = temp;
+
+bool isOperator(char c){
+    if(c=='+'|| c=='-'||c=='/'||c=='*'){
+        return true;
     }
-    else
-    {
- cout<<"\n Stack is full";
-    }
-}
-node * stack::pop()
-{
-    if(!isempty())
-    {
-       return(a[top--]);
-    }
-    else
-    {
-        cout<<"\n Stack is empty";
-        return NULL;
-    }
-}
-int stack::isempty()
-{
-    if(top == -1)
-    {
-        return(1);
-    }
-    else
-    {
-        return(0);
-    }
-}
-int stack::isfull()
-{
-    if(top == 19)
-    {
-        return(1);
-    }
-    else
-    {
-        return(0);
-    }
+    return false;
 }
 
-class Expression_Tree
-{
-    public:
-        node *root;
-        Expression_Tree()
-        {
-            root = NULL;
+node* expressionTree(string s, int n){
+    stack<node*> st;
+    for(int i=n-1; i>=0; i--){
+        if(!isOperator(s[i])){
+            node* t = new node(s[i]);
+            st.push(t);
         }
-        void Create_Expression_Tree();
-        void infix(node *temp);
-        void prefix(node *temp);
-        void postfix(node *temp);
-};
-void Expression_Tree::Create_Expression_Tree()
-{
-    int i;
-    char ch;
-    stack s;
-    node *new_node, *temp;
-    char postfix_Exp[20];
-    cout<<"\nEnter postfix expression : ";
-    cin>>postfix_Exp;
+        else{
+            node * t = new node(s[i]);
+            node* t1 = st.top();
+            st.pop();
+            t->right = t1;
+            node* t2 = st.top();
+            st.pop();
+            t->left = t2;
+            
+            st.push(t);
+        }
+    }
     
-    for(i = 0; postfix_Exp[i] !='\0'; i++)
-    {
-        ch = postfix_Exp[i];
-        new_node = new node();
-        new_node -> data = ch;
-        new_node ->left = NULL;
-        new_node ->right = NULL;
-        if((ch >= 'A' && ch <= 'Z' ) || (ch >= 'a' && ch <= 'z' ) )
-        {
-            s.push(new_node);
-           
-        }
-        else
-        {
-            temp = s.pop();
-            new_node->right = temp;
-            temp = s.pop();
-            new_node->left = temp;
-            s.push(new_node);
-        }
-    }
-    root = s.pop();
+    node* t = st.top();
+    return t;
 }
-void Expression_Tree::infix(node * temp)
-{
-    if(temp != NULL)
-    {
-        infix(temp->left);
-        cout<<" "<<temp->data;
-        infix(temp->right);
+
+void Inorder(node* root){
+    if(root == NULL){
+       return;
     }
+        Inorder(root->left);
+        cout<<root->data;
+        Inorder(root->right);
+    
 }
-void Expression_Tree::prefix(node * temp)
-{
-    if(temp != NULL)
-    {
-        cout<<" "<<temp->data;
-        prefix(temp->left);
-        prefix(temp->right);
-    }
-}
-void Expression_Tree::postfix(node * temp)
-{
-    if(temp != NULL)
-    {
-        postfix(temp->left);
-        postfix(temp->right);
-        cout<<" "<<temp->data;
-    }
-}
-int main()
-{
-    Expression_Tree E;
-    E.Create_Expression_Tree();
-    cout<<"\n Infix Expression : ";
-    E.infix(E.root);
-    cout<<"\n prefix Expression : ";
-    E.prefix(E.root);
-    cout<<"\n Postfixfix Expression : ";
-    E.postfix(E.root);
+
+int main() {
+    string s;
+    cin>>s;
+    node* root = expressionTree(s, s.length());
+    Inorder(root);
+    return 0;
 }
