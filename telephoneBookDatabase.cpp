@@ -12,154 +12,89 @@ Title= Consider telephone book database of N clients. Make use of a hash table i
 5. STOP
 */
 
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
-class HashTable
+void Hash(int arr[], int HashTable[], int n)
 {
-public:
-    int index;
-    long int mobile;
-};
-class Hashing
-{
-    HashTable h[10];
-
-public:
-    Hashing()
+    for (int i = 0; i < n; i++)
     {
-        for (int i = 0; i < 10; i++)
+        int x;
+        x = arr[i] % 10;
+        // int *p = HashTable;
+        if (HashTable[x] == 0)
         {
-            h[i].index = i;
-            h[i].mobile = -1;
+            HashTable[x] = arr[i];
         }
-    }
-    void display();
-    void insert();
-    void search();
-    int LinearProbing(int);
-};
-
-int Hashing::LinearProbing(int collision_position)
-{
-    for (int i = collision_position; i < 10; i++)
-    {
-        if (h[i].mobile == -1)
-            return i;
-
-        if (i == 9)
-            i = -1;
+        else
+        {
+            while (HashTable[x] != 0)
+            {
+                x++;
+            }
+            HashTable[x] = arr[i];
+        }
     }
 }
 
-void Hashing::display()
+int Search(int HashTable[], int no)
 {
     for (int i = 0; i < 10; i++)
     {
-        cout << h[i].index;
-        cout << "  " << h[i].mobile;
-        cout << endl;
+        if (HashTable[i] == no)
+        {
+            return HashTable[i];
+        }
     }
+    return -1;
 }
-void Hashing::insert()
+
+void Delete(int HashTable[], int no)
 {
-    long int key;
-    int position;
-    cout << "\nEnter mobile number to insert in to hash table : ";
-    cin >> key;
-    position = key % 10;
-
-    cout << "\nPosition = " << position;
-
-    if (h[position].mobile == -1)
+    int temp = Search(HashTable, no);
+    if (temp != -1)
     {
-        h[position].mobile = key;
-    }
-    else
-    {
-        int temp_position;
-        temp_position = LinearProbing(position);
-        h[temp_position].mobile = key;
+        for (int i = temp; i < 10; i++)
+        {
+            HashTable[i] = HashTable[i++];
+        }
     }
 }
 
-void Hashing::search()
-{
-    long int key;
-    int position;
-    cout << "\nEnter mobile number to search in the hash table : ";
-    cin >> key;
-    position = key % 10;
-
-    if (h[position].mobile == key)
-    {
-        cout << "\nGiven mobile number is found in the hash table ";
-    }
-    else
-    {
-        cout << "\nGiven mobile number is NOT found in the hash table ";
-    }
-}
 int main()
 {
-    Hashing H;
-    int ch;
-    do
+    int n;
+    cout << "enter size\n";
+    cin >> n;
+    int arr[n];
+    cout << "enter no.s\n";
+    for (int i = 0; i < n; i++)
     {
-        cout << "\n Menu";
-        cout << "\n 1. insert";
-        cout << "\n 2.display";
-        cout << "\n 3.search";
-        cout << "\n 4. exit";
-        cout << "\n Enter your choice : ";
-        cin >> ch;
-        switch (ch)
-        {
-        case 1: // insert
-            H.insert();
-            break;
-        case 2: // display
-            H.display();
-            break;
+        cin >> arr[i];
+    }
 
-        case 3: // display
-            H.search();
-            break;
+    int HashTable[10];
+    for (int i = 0; i < 10; i++)
+    {
+        HashTable[i] = 0;
+    }
 
-        default:
-            cout << "\nWrong choice :";
-            break;
-        }
+    Hash(arr, HashTable, n);
+    for (int i = 0; i < 10; i++)
+    {
+        cout << HashTable[i] << " ";
+    }
+    cout << endl;
 
-    } while (ch != 5);
-    H.display();
+    if (Search(HashTable, 4) == -1)
+    {
+        cout << "Not found";
+    }
+    else
+    {
+        cout << Search(HashTable, 4) << endl;
+    }
+
+    Delete(HashTable, 4);
+
+    return 0;
 }
-/*Output=
- Menu
- 1. insert
- 2.display
- 3.search
- 4. exit
- Enter your choice : 1
-
-Enter mobile number to insert in to hash table : 678
-Position = 8
-  Enter your choice : 1
-
-Enter mobile number to insert in to hash table : 546
-Position = 6
- Enter your choice : 2
-0  -1
-1  -1
-2  -1
-3  -1
-4  -1
-5  -1
-6  546
-7  -1
-8  678
-9  -1
-Enter your choice : 3
-Enter mobile number to search in the hash table : 678
-Given mobile number is found in the hash table
-Enter your choice : 978
-Wrong choice :*/
